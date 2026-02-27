@@ -98,7 +98,7 @@
   .action-bar {
     display: flex;
     gap: 10px;
-    justify-content: flex-end;
+    justify-content: center;
     margin-bottom: 24px;
     flex-wrap: wrap;
   }
@@ -401,9 +401,9 @@
     <span class="schedule-badge">📅 Schedule: Monday · Wednesday · Friday &nbsp;|&nbsp; 8:00 AM – 12:00 PM</span>
   </div>
 
-  <div class="action-bar"><center>
+  <div class="action-bar">
     <button class="btn btn-print" onclick="printForm()">🖨️ &nbsp;Print</button>
-    <button class="btn btn-email" onclick="sendEmail()">✉️ &nbsp;Email Log</button></center>
+    <button class="btn btn-email" onclick="sendEmail()">✉️ &nbsp;Email</button>
   </div>
 
   <div class="meta-grid">
@@ -1116,8 +1116,6 @@
   function printForm() {
     window.print();
   }
-
-  // ── 2. SAVE AS PDF — uses html2pdf.js to auto-download a PDF ──
   function saveAsPDF() {
     const btn = document.getElementById('pdfBtn');
     const bar = document.querySelector('.action-bar');
