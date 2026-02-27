@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<!-- saved from url=(0055)file:///C:/Users/Aiken/Desktop/daily_home_care_log.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Home Care Log</title>
+<link href="./index_files/css2" rel="stylesheet">
+<script src="./index_files/html2pdf.bundle.min.js.download"></script>
+<style>
+  :root {
+    --cream: #faf7f2;
+    --warm-white: #fff9f4;
+    --sage: #5a7a6a;
+    --sage-light: #8aaa97;
+    --sage-dark: #3d5c4e;
+    --sage-pale: #e8f0eb;
+    --amber: #c8894a;
+    --amber-light: #f2dfc4;
+    --charcoal: #2c2e2b;
+    --mid: #6b6e67;
+    --light: #b0b5ad;
+    --divider: #dde5df;
+    --shadow: 0 2px 18px rgba(60,80,65,0.09);
+    --radius: 12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    font-size: 14.5px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      radial-gradient(circle at 20% 10%, rgba(90,122,106,0.07) 0%, transparent 45%),
+      radial-gradient(circle at 80% 85%, rgba(200,137,74,0.06) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  .form-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 44px 40px 36px;
+    background: var(--sage-dark);
+    border-radius: var(--radius);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 32px rgba(40,70,55,0.22);
+  }
+  .form-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(-45deg, transparent, transparent 18px, rgba(255,255,255,0.025) 18px, rgba(255,255,255,0.025) 19px);
+  }
+  .header-icon { font-size: 36px; margin-bottom: 10px; display: block; }
+  .form-header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.04em;
+    line-height: 1.15;
+  }
+  .form-header .subtitle {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--sage-light);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-top: 10px;
+  }
+  .schedule-badge {
+    display: inline-block;
+    margin-top: 18px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #e8f0eb;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 40px;
+  }
+  .action-bar {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 20px;
+    border-radius: 40px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-print { background: var(--sage); color: #fff; box-shadow: 0 3px 10px rgba(90,122,106,0.35); }
+  .btn-print:hover { background: var(--sage-dark); transform: translateY(-1px); }
+  .btn-email { background: var(--amber); color: #fff; box-shadow: 0 3px 10px rgba(200,137,74,0.35); }
+  .btn-email:hover { background: #b37840; transform: translateY(-1px); }
+  .btn-pdf { background: var(--charcoal); color: #fff; box-shadow: 0 3px 10px rgba(44,46,43,0.25); }
+  .btn-pdf:hover { background: #1a1c1a; transform: translateY(-1px); }
+  .btn-pdf:disabled { opacity: 0.6; cursor: wait; transform: none; }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 620px) { .meta-grid { grid-template-columns: 1fr; } }
+  .meta-field label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sage-dark);
+    margin-bottom: 6px;
+  }
+  .meta-field input {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid var(--divider);
+    background: transparent;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.95rem;
+    color: var(--charcoal);
+    padding: 6px 4px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .meta-field input:focus { border-bottom-color: var(--sage); }
+  .section {
+    background: var(--warm-white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    border: 1px solid var(--divider);
+    overflow: hidden;
+    animation: fadeUp 0.4s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, var(--sage-pale) 0%, rgba(232,240,235,0.4) 100%);
+    border-bottom: 1px solid var(--divider);
+  }
+  .section-number {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--sage);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.18rem;
+    font-weight: 600;
+    color: var(--sage-dark);
+    letter-spacing: 0.02em;
+  }
+  .section-icon { font-size: 1.1rem; margin-left: auto; opacity: 0.5; }
+  .section-body { padding: 22px 24px; }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 16px;
+  }
+  .field-row.full { grid-template-columns: 1fr; }
+  .field-row.three { grid-template-columns: 1fr 1fr 1fr; }
+  @media (max-width: 580px) {
+    .field-row, .field-row.three { grid-template-columns: 1fr; }
+  }
+  .field-group { display: flex; flex-direction: column; }
+  .field-group label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 5px;
+  }
+  .field-group input[type="text"],
+  .field-group input[type="time"],
+  .field-group input[type="number"],
+  .field-group input[type="date"],
+  .field-group textarea,
+  .field-group select {
+    width: 100%;
+    border: 1.5px solid var(--divider);
+    border-radius: 7px;
+    background: var(--cream);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.9rem;
+    color: var(--charcoal);
+    padding: 8px 12px;
+    outline: none;
+    transition: border-color 0.18s, box-shadow 0.18s;
+    resize: vertical;
+  }
+  .field-group input:focus,
+  .field-group textarea:focus,
+  .field-group select:focus {
+    border-color: var(--sage);
+    box-shadow: 0 0 0 3px rgba(90,122,106,0.12);
+  }
+  .field-group textarea { min-height: 64px; }
+  .check-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    margin-bottom: 14px;
+  }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 400;
+    color: var(--charcoal);
+    user-select: none;
+  }
+  .check-item input[type="checkbox"],
+  .check-item input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 17px; height: 17px;
+    border: 2px solid var(--sage-light);
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .check-item input[type="radio"] { border-radius: 50%; }
+  .check-item input[type="checkbox"]:checked { background: var(--sage); border-color: var(--sage); }
+  .check-item input[type="radio"]:checked { background: var(--sage); border-color: var(--sage); }
+  .check-item input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 5px;
+    width: 5px; height: 9px;
+    border: 2px solid #fff;
+    border-top: none; border-left: none;
+    transform: rotate(45deg);
+  }
+  .check-item input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #fff;
+  }
+  .yn-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .yn-label {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--charcoal);
+    min-width: 200px;
+    flex: 1;
+  }
+  .yn-options { display: flex; gap: 14px; }
+  .sub-divider {
+    border: none;
+    border-top: 1px dashed var(--divider);
+    margin: 18px 0;
+  }
+  .san-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 20px;
+  }
+  @media (max-width: 500px) { .san-grid { grid-template-columns: 1fr; } }
+  .sig-section {
+    background: linear-gradient(135deg, var(--sage-dark) 0%, #2e4a3d 100%);
+    border-radius: var(--radius);
+    padding: 28px 28px 24px;
+    color: #fff;
+    margin-top: 28px;
+    box-shadow: 0 6px 24px rgba(40,70,55,0.2);
+  }
+  .sig-section h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .sig-section .cert-text {
+    font-size: 0.82rem;
+    color: var(--sage-light);
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+  .sig-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 580px) { .sig-grid { grid-template-columns: 1fr; } }
+  .sig-block label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sage-light);
+    margin-bottom: 8px;
+  }
+  .sig-line {
+    border: none;
+    border-bottom: 1.5px solid rgba(255,255,255,0.3);
+    width: 100%;
+    background: transparent;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: #fff;
+    padding: 6px 4px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .sig-line:focus { border-bottom-color: rgba(255,255,255,0.7); }
+  .sig-date {
+    border: none;
+    border-bottom: 1.5px solid rgba(255,255,255,0.3);
+    width: 100%;
+    background: transparent;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.9rem;
+    color: #fff;
+    padding: 6px 4px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-top: 10px;
+  }
+  .sig-date:focus { border-bottom-color: rgba(255,255,255,0.7); }
+  @media print {
+    body { background: #fff; font-size: 12px; }
+    body::before { display: none; }
+    .action-bar { display: none !important; }
+    .form-header { background: var(--sage-dark) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .section { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+    .section-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .section-number { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .sig-section { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page-wrap { padding: 10px; max-width: 100%; }
+    .field-group input, .field-group textarea, .field-group select { border: 1px solid #aaa; background: #fff; }
+    .check-item input[type="checkbox"]:checked,
+    .check-item input[type="radio"]:checked { background: var(--sage) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="form-header">
+    <span class="header-icon">🏠</span>
+    <h1>Daily Home Care Log</h1>
+    <p class="subtitle">Professional Care Documentation</p>
+    <span class="schedule-badge">📅 Schedule: Monday · Wednesday · Friday &nbsp;|&nbsp; 8:00 AM – 12:00 PM</span>
+  </div>
+
+  <div class="action-bar">
+    <button class="btn btn-print" onclick="printForm()">🖨️ &nbsp;Print</button>
+    <button class="btn btn-pdf" id="pdfBtn" onclick="saveAsPDF()">💾 &nbsp;Save as PDF</button>
+    <button class="btn btn-email" onclick="sendEmail()">✉️ &nbsp;Email Log</button>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-field">
+      <label>Client Name</label>
+      <input type="text" id="clientName" placeholder="Full name">
+    </div>
+    <div class="meta-field">
+      <label>Care Provider Name</label>
+      <input type="text" id="providerName" placeholder="Full name">
+    </div>
+    <div class="meta-field">
+      <label>Date</label>
+      <input type="date" id="shiftDate">
+    </div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <span class="section-title">Start-of-Shift Assessment</span>
+      <span class="section-icon">🔍</span>
+    </div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field-group">
+          <label>Client Location / Position on Arrival</label>
+          <input type="text" id="s1_location" placeholder="e.g. bed, recliner, wheelchair…">
+        </div>
+        <div class="field-group">
+          <label>General Presentation</label>
+          <input type="text" id="s1_presentation" placeholder="e.g. alert, calm, fatigued, confused…">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>Mobility Status Observed</label>
+          <input type="text" id="s1_mobility" placeholder="e.g. steady with walker, unsteady…">
+        </div>
+        <div class="field-group">
+          <label>Immediate Safety Risks Noted</label>
+          <input type="text" id="s1_risks" placeholder="Describe or write &#39;None&#39;">
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>Initial Safety Actions Taken</label>
+          <input type="text" id="s1_actions" placeholder="e.g. walker placement, cleared path, locked wheelchair…">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <span class="section-title">Morning Personal Care &amp; Hygiene</span>
+      <span class="section-icon">🛁</span>
+    </div>
+    <div class="section-body">
+      <div class="yn-row">
+        <span class="yn-label">Bathing completed today:</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="bathing" value="yes"><span>Yes</span></label>
+          <label class="check-item"><input type="radio" name="bathing" value="no"><span>No</span></label>
+        </div>
+      </div>
+      <div class="yn-row">
+        <span class="yn-label">Bathing type:</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="bathType" value="shower"><span>Shower</span></label>
+          <label class="check-item"><input type="radio" name="bathType" value="sponge"><span>Sponge Bath</span></label>
+        </div>
+      </div>
+      <div class="field-row three">
+        <div class="field-group">
+          <label>Time Bathing Completed</label>
+          <input type="time" id="s2_bathTime">
+        </div>
+        <div class="field-group">
+          <label>Oral Hygiene Completed</label>
+          <div class="yn-options" style="margin-top:6px;">
+            <label class="check-item"><input type="radio" name="oral" value="yes"><span>Yes</span></label>
+            <label class="check-item"><input type="radio" name="oral" value="no"><span>No</span></label>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Hair Grooming Completed</label>
+          <div class="yn-options" style="margin-top:6px;">
+            <label class="check-item"><input type="radio" name="hair" value="yes"><span>Yes</span></label>
+            <label class="check-item"><input type="radio" name="hair" value="no"><span>No</span></label>
+          </div>
+        </div>
+      </div>
+      <hr class="sub-divider">
+      <div class="yn-row">
+        <span class="yn-label">Clean clothing &amp; undergarments ensured:</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="clothing" value="yes"><span>Yes</span></label>
+          <label class="check-item"><input type="radio" name="clothing" value="no"><span>No</span></label>
+        </div>
+      </div>
+      <div class="yn-row">
+        <span class="yn-label">Skin inspection performed:</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="skin_inspect" value="yes"><span>Yes</span></label>
+          <label class="check-item"><input type="radio" name="skin_inspect" value="no"><span>No</span></label>
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>Skin Observations (redness, irritation, bruising, breakdown — include location &amp; severity)</label>
+          <textarea id="s2_skin" placeholder="Describe findings or write &#39;None observed&#39;"></textarea>
+        </div>
+      </div>
+      <div class="yn-row">
+        <span class="yn-label">Bathroom sanitized after hygiene:</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="bath_san" value="yes"><span>Yes</span></label>
+          <label class="check-item"><input type="radio" name="bath_san" value="no"><span>No</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <span class="section-title">Toileting &amp; Continence Care</span>
+      <span class="section-icon">🚿</span>
+    </div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field-group">
+          <label style="margin-bottom:8px;">Toileting Assistance Provided</label>
+          <div class="yn-options">
+            <label class="check-item"><input type="radio" name="toilet_assist" value="yes"><span>Yes</span></label>
+            <label class="check-item"><input type="radio" name="toilet_assist" value="no"><span>No</span></label>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Number of Toileting Assists</label>
+          <input type="number" id="s3_count" min="0" placeholder="0">
+        </div>
+      </div>
+      <hr class="sub-divider">
+      <div class="yn-row">
+        <span class="yn-label">Incontinence observed:</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="incon" value="no"><span>No</span></label>
+          <label class="check-item"><input type="radio" name="incon" value="yes"><span>Yes</span></label>
+        </div>
+      </div>
+      <div class="field-row three">
+        <div class="field-group">
+          <label>If Yes — Type</label>
+          <input type="text" id="s3_inconType" placeholder="e.g. urine / stool / both">
+        </div>
+        <div class="field-group">
+          <label>Soiled Items Changed Promptly</label>
+          <div class="yn-options" style="margin-top:6px;">
+            <label class="check-item"><input type="radio" name="soiled" value="yes"><span>Yes</span></label>
+            <label class="check-item"><input type="radio" name="soiled" value="no"><span>No</span></label>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Hygiene After Each Episode</label>
+          <div class="yn-options" style="margin-top:6px;">
+            <label class="check-item"><input type="radio" name="hygiene_ep" value="yes"><span>Yes</span></label>
+            <label class="check-item"><input type="radio" name="hygiene_ep" value="no"><span>No</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>Additional Notes</label>
+          <textarea id="s3_notes" placeholder="Additional observations or notes…"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <span class="section-title">Mobility &amp; Equipment Compliance</span>
+      <span class="section-icon">🚶</span>
+    </div>
+    <div class="section-body">
+      <div class="field-group" style="margin-bottom:14px;">
+        <label>Mobility Device Used Today (check all applicable)</label>
+        <div class="check-group" style="margin-top:8px;">
+          <label class="check-item"><input type="checkbox" id="dev_walker"><span>Walker (preferred)</span></label>
+          <label class="check-item"><input type="checkbox" id="dev_cane"><span>Cane</span></label>
+          <label class="check-item"><input type="checkbox" id="dev_wheelchair"><span>Wheelchair</span></label>
+        </div>
+      </div>
+      <div class="yn-row">
+        <span class="yn-label">Supervised ambulation performed:</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="ambulation" value="yes"><span>Yes</span></label>
+          <label class="check-item"><input type="radio" name="ambulation" value="no"><span>No</span></label>
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>Approximate Duration / Distance</label>
+          <input type="text" id="s4_ambDist" placeholder="e.g. 10 min, approx. 30 feet…">
+        </div>
+      </div>
+      <hr class="sub-divider">
+      <div class="field-group" style="margin-bottom:14px;">
+        <label>Transfers Assisted (check all applicable)</label>
+        <div class="check-group" style="margin-top:8px;">
+          <label class="check-item"><input type="checkbox" id="tx_bed_chair"><span>Bed ↔ Chair</span></label>
+          <label class="check-item"><input type="checkbox" id="tx_chair_toilet"><span>Chair ↔ Toilet</span></label>
+          <label class="check-item"><input type="checkbox" id="tx_chair_walker"><span>Chair ↔ Walker</span></label>
+          <label class="check-item"><input type="checkbox" id="tx_other_cb"><span>Other</span></label>
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>Other Transfer Details</label>
+          <input type="text" id="s4_txOther" placeholder="Describe other transfer type if applicable…">
+        </div>
+      </div>
+      <hr class="sub-divider">
+      <div class="yn-row">
+        <span class="yn-label">Unsafe independent movement attempt observed:</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="unsafe_move" value="no"><span>No</span></label>
+          <label class="check-item"><input type="radio" name="unsafe_move" value="yes"><span>Yes</span></label>
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>If Yes — Describe Event &amp; Corrective Action Taken</label>
+          <textarea id="s4_unsafeDesc" placeholder="Describe the event and actions taken…"></textarea>
+        </div>
+      </div>
+      <div class="yn-row">
+        <span class="yn-label">Wheelchair brakes locked when stationary (if used):</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="wc_brakes" value="yes"><span>Yes</span></label>
+          <label class="check-item"><input type="radio" name="wc_brakes" value="no"><span>No</span></label>
+          <label class="check-item"><input type="radio" name="wc_brakes" value="na"><span>N/A</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <span class="section-title">Physical Therapy Coordination</span>
+      <span class="section-icon">🏋️</span>
+    </div>
+    <div class="section-body">
+      <div class="yn-row">
+        <span class="yn-label">Physical therapy occurred today:</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="pt_today" value="yes"><span>Yes</span></label>
+          <label class="check-item"><input type="radio" name="pt_today" value="no"><span>No</span></label>
+          <label class="check-item"><input type="radio" name="pt_today" value="na"><span>N/A</span></label>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>PT Start Time</label>
+          <input type="time" id="s5_ptStart">
+        </div>
+        <div class="field-group">
+          <label>PT End Time</label>
+          <input type="time" id="s5_ptEnd">
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>Aide Support Provided (transfers, positioning, safety standby)</label>
+          <textarea id="s5_support" placeholder="Describe aide support during PT session…"></textarea>
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>Non-Clinical Observations During PT</label>
+          <textarea id="s5_obs" placeholder="e.g. client&#39;s tolerance, fatigue level, cooperation, mood…"></textarea>
+        </div>
+      </div>
+      <hr class="sub-divider">
+      <div class="field-group" style="margin-bottom:12px;">
+        <label>If PT Was Scheduled But Did Not Occur — Alternative Activity Completed</label>
+        <div class="check-group" style="margin-top:8px;">
+          <label class="check-item"><input type="checkbox" id="alt_outing"><span>Community Outing</span></label>
+          <label class="check-item"><input type="checkbox" id="alt_home"><span>Home-Based Mobility Reinforcement</span></label>
+          <label class="check-item"><input type="checkbox" id="alt_exercises"><span>Therapist-Assigned Exercises</span></label>
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>Alternative Activity Details</label>
+          <textarea id="s5_altDetail" placeholder="Describe what was done instead…"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <span class="section-title">Nutrition &amp; Hydration</span>
+      <span class="section-icon">🥗</span>
+    </div>
+    <div class="section-body">
+      <div class="yn-row">
+        <span class="yn-label">Fluids encouraged during shift:</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="fluids" value="yes"><span>Yes</span></label>
+          <label class="check-item"><input type="radio" name="fluids" value="no"><span>No</span></label>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>Approximate Fluid Intake During Shift</label>
+          <input type="text" id="s6_fluidAmt" placeholder="e.g. approx. 20 oz, 3 cups…">
+        </div>
+        <div class="field-group">
+          <label>Food Assistance Provided</label>
+          <div class="yn-options" style="margin-top:6px;">
+            <label class="check-item"><input type="radio" name="food" value="yes"><span>Yes</span></label>
+            <label class="check-item"><input type="radio" name="food" value="no"><span>No</span></label>
+            <label class="check-item"><input type="radio" name="food" value="na"><span>N/A</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="yn-row">
+        <span class="yn-label">Swallowing difficulty observed (coughing, choking, wet voice):</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="swallow" value="no"><span>No</span></label>
+          <label class="check-item"><input type="radio" name="swallow" value="yes"><span>Yes</span></label>
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>If Yes — Describe Swallowing Difficulty</label>
+          <input type="text" id="s6_swallowDesc" placeholder="Describe episode, timing, and response taken…">
+        </div>
+      </div>
+      <div class="yn-row">
+        <span class="yn-label">Eating area sanitized after use:</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="eat_san" value="yes"><span>Yes</span></label>
+          <label class="check-item"><input type="radio" name="eat_san" value="no"><span>No</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <span class="section-title">Hygiene &amp; Sanitation Actions Completed</span>
+      <span class="section-icon">🧼</span>
+    </div>
+    <div class="section-body">
+      <div class="san-grid">
+        <label class="check-item"><input type="checkbox" id="san1"><span>Hand hygiene maintained during care</span></label>
+        <label class="check-item"><input type="checkbox" id="san2"><span>Gloves used for toileting / incontinence care</span></label>
+        <label class="check-item"><input type="checkbox" id="san3"><span>Bathroom touchpoints sanitized</span></label>
+        <label class="check-item"><input type="checkbox" id="san4"><span>Bedside / high-touch surfaces sanitized</span></label>
+        <label class="check-item"><input type="checkbox" id="san5"><span>Mobility device handles sanitized</span></label>
+        <label class="check-item"><input type="checkbox" id="san6"><span>Care-related waste disposed properly</span></label>
+      </div>
+      <hr class="sub-divider">
+      <div class="field-row full">
+        <div class="field-group">
+          <label>Additional Sanitation Performed</label>
+          <textarea id="s7_extra" placeholder="List any additional cleaning or sanitation tasks completed…"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 8 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <span class="section-title">Engagement &amp; Cognitive Support</span>
+      <span class="section-icon">🧠</span>
+    </div>
+    <div class="section-body">
+      <div class="yn-row">
+        <span class="yn-label">Orientation reinforcement provided (day / date / time):</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="orient" value="yes"><span>Yes</span></label>
+          <label class="check-item"><input type="radio" name="orient" value="no"><span>No</span></label>
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>Engagement Activity Completed (conversation, reading, seated activity, etc.)</label>
+          <textarea id="s8_activity" placeholder="Describe the engagement activity and client&#39;s response…"></textarea>
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>Mood Observed During Shift</label>
+          <input type="text" id="s8_mood" placeholder="e.g. stable, anxious, fatigued, cheerful, withdrawn…">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 9 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">9</div>
+      <span class="section-title">Observations &amp; Changes</span>
+      <span class="section-icon">📋</span>
+    </div>
+    <div class="section-body">
+      <div class="field-row full">
+        <div class="field-group">
+          <label>Changes in Mobility, Cognition, Mood, Appetite, Hydration, Pain, or Skin Condition</label>
+          <textarea id="s9_changes" placeholder="Document any notable changes from baseline or previous shift…"></textarea>
+        </div>
+      </div>
+      <hr class="sub-divider">
+      <div class="yn-row">
+        <span class="yn-label">Pain reported or observed:</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="pain" value="no"><span>No</span></label>
+          <label class="check-item"><input type="radio" name="pain" value="yes"><span>Yes</span></label>
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>Location / Intensity (if known)</label>
+          <input type="text" id="s9_pain" placeholder="e.g. left knee, 4/10 intensity…">
+        </div>
+      </div>
+      <hr class="sub-divider">
+      <div class="yn-row">
+        <span class="yn-label">Falls or near-falls during shift:</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="falls" value="no"><span>No</span></label>
+          <label class="check-item"><input type="radio" name="falls" value="yes"><span>Yes</span></label>
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>If Yes — Describe Incident in Detail</label>
+          <textarea id="s9_fallDesc" placeholder="Describe what occurred, client condition after, and actions taken…"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 10 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <span class="section-title">Client-Related Household Tasks Completed</span>
+      <span class="section-icon">🏡</span>
+    </div>
+    <div class="section-body">
+      <div class="san-grid">
+        <label class="check-item"><input type="checkbox" id="hh1"><span>Bed made / linens changed</span></label>
+        <label class="check-item"><input type="checkbox" id="hh2"><span>Client laundry completed</span></label>
+        <label class="check-item"><input type="checkbox" id="hh3"><span>Hygiene supplies organized</span></label>
+        <label class="check-item"><input type="checkbox" id="hh4"><span>Bathroom sanitized</span></label>
+        <label class="check-item"><input type="checkbox" id="hh5"><span>Bedside area sanitized</span></label>
+        <label class="check-item"><input type="checkbox" id="hh6"><span>Supplies restocked</span></label>
+      </div>
+      <hr class="sub-divider">
+      <div class="field-row full">
+        <div class="field-group">
+          <label>Notes</label>
+          <textarea id="s10_notes" placeholder="Additional household task notes or context…"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 11 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">11</div>
+      <span class="section-title">End-of-Shift Condition</span>
+      <span class="section-icon">🌅</span>
+    </div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field-group">
+          <label>Client Position at Departure</label>
+          <input type="text" id="s11_position" placeholder="e.g. bed, recliner, dining chair…">
+        </div>
+        <div class="field-group">
+          <label>Mobility Device Positioned Within Reach</label>
+          <div class="yn-options" style="margin-top:6px;">
+            <label class="check-item"><input type="radio" name="device_reach" value="yes"><span>Yes</span></label>
+            <label class="check-item"><input type="radio" name="device_reach" value="no"><span>No</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="yn-row">
+        <span class="yn-label">Client clean, dry, and appropriately dressed at departure:</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="clean_dry" value="yes"><span>Yes</span></label>
+          <label class="check-item"><input type="radio" name="clean_dry" value="no"><span>No</span></label>
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>Overall Condition at Departure</label>
+          <input type="text" id="s11_condition" placeholder="e.g. stable, fatigued, restful, improved…">
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>Supplies Needed for Next Shift</label>
+          <textarea id="s11_supplies" placeholder="List any items that need to be replenished before next visit…"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 12 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">12</div>
+      <span class="section-title">Communication</span>
+      <span class="section-icon">💬</span>
+    </div>
+    <div class="section-body">
+      <div class="yn-row">
+        <span class="yn-label">Responsible party notified today:</span>
+        <div class="yn-options">
+          <label class="check-item"><input type="radio" name="rp_notified" value="no"><span>No</span></label>
+          <label class="check-item"><input type="radio" name="rp_notified" value="yes"><span>Yes</span></label>
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field-group">
+          <label>If Yes — Reason &amp; Summary of Discussion</label>
+          <textarea id="s12_summary" placeholder="Summarize who was notified, reason for contact, and outcome of the communication…"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIGNATURE -->
+  <div class="sig-section">
+    <h3>Acknowledgment of Care Provided</h3>
+    <p class="cert-text">I certify that the above information accurately reflects care provided during this shift.</p>
+    <div class="sig-grid">
+      <div class="sig-block">
+        <label>Home Care Aide Signature</label>
+        <input type="text" class="sig-line" id="aideSignature" placeholder="Type full name as signature">
+        <input type="date" class="sig-date" id="aideDate">
+      </div>
+      <div class="sig-block">
+        <label>Client / Responsible Party Signature</label>
+        <input type="text" class="sig-line" id="clientSignature" placeholder="Type full name as signature">
+        <input type="date" class="sig-date" id="clientDate">
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── Set today's date on load ──
+  document.getElementById('shiftDate').valueAsDate = new Date();
+
+  // ── Field helpers ──
+  function gv(id) {
+    const el = document.getElementById(id);
+    return el ? (el.value.trim() || '—') : '—';
+  }
+  function gr(name) {
+    const sel = document.querySelector('input[name="' + name + '"]:checked');
+    if (!sel) return 'Not selected';
+    const v = sel.value;
+    return v === 'na' ? 'N/A' : v.charAt(0).toUpperCase() + v.slice(1);
+  }
+  function gcb(ids) {
+    const checked = ids.map(id => {
+      const el = document.getElementById(id);
+      if (el && el.checked) {
+        const span = el.parentElement.querySelector('span');
+        return span ? span.textContent.trim() : '';
+      }
+      return null;
+    }).filter(Boolean);
+    return checked.length ? checked.join(', ') : 'None';
+  }
+
+  // ── Build plain-text summary for email ──
+  function buildBody() {
+    const lines = [];
+    const p = (...args) => lines.push(...args);
+
+    p('DAILY HOME CARE LOG');
+    p('Schedule: Monday / Wednesday / Friday | 8:00 AM – 12:00 PM');
+    p('================================================');
+    p('Client: ' + gv('clientName'));
+    p('Care Provider: ' + gv('providerName'));
+    p('Date: ' + gv('shiftDate'));
+    p('');
+    p('── 1. START-OF-SHIFT ASSESSMENT ──');
+    p('Client Location on Arrival: ' + gv('s1_location'));
+    p('General Presentation: ' + gv('s1_presentation'));
+    p('Mobility Status: ' + gv('s1_mobility'));
+    p('Safety Risks Noted: ' + gv('s1_risks'));
+    p('Initial Safety Actions: ' + gv('s1_actions'));
+    p('');
+    p('── 2. MORNING PERSONAL CARE & HYGIENE ──');
+    p('Bathing Completed: ' + gr('bathing'));
+    p('Bath Type: ' + gr('bathType'));
+    p('Time Bathing Completed: ' + gv('s2_bathTime'));
+    p('Oral Hygiene: ' + gr('oral'));
+    p('Hair Grooming: ' + gr('hair'));
+    p('Clean Clothing Ensured: ' + gr('clothing'));
+    p('Skin Inspection Performed: ' + gr('skin_inspect'));
+    p('Skin Observations: ' + gv('s2_skin'));
+    p('Bathroom Sanitized After Hygiene: ' + gr('bath_san'));
+    p('');
+    p('── 3. TOILETING & CONTINENCE CARE ──');
+    p('Toileting Assistance Provided: ' + gr('toilet_assist'));
+    p('Number of Toileting Assists: ' + gv('s3_count'));
+    p('Incontinence Observed: ' + gr('incon'));
+    p('Incontinence Type: ' + gv('s3_inconType'));
+    p('Soiled Items Changed Promptly: ' + gr('soiled'));
+    p('Hygiene After Each Episode: ' + gr('hygiene_ep'));
+    p('Notes: ' + gv('s3_notes'));
+    p('');
+    p('── 4. MOBILITY & EQUIPMENT COMPLIANCE ──');
+    p('Devices Used: ' + gcb(['dev_walker','dev_cane','dev_wheelchair']));
+    p('Supervised Ambulation: ' + gr('ambulation'));
+    p('Duration / Distance: ' + gv('s4_ambDist'));
+    p('Transfers Assisted: ' + gcb(['tx_bed_chair','tx_chair_toilet','tx_chair_walker','tx_other_cb']));
+    p('Other Transfer Details: ' + gv('s4_txOther'));
+    p('Unsafe Movement Observed: ' + gr('unsafe_move'));
+    p('Unsafe Event Description: ' + gv('s4_unsafeDesc'));
+    p('Wheelchair Brakes Locked: ' + gr('wc_brakes'));
+    p('');
+    p('── 5. PHYSICAL THERAPY COORDINATION ──');
+    p('PT Occurred Today: ' + gr('pt_today'));
+    p('PT Start: ' + gv('s5_ptStart') + '  |  PT End: ' + gv('s5_ptEnd'));
+    p('Aide Support Provided: ' + gv('s5_support'));
+    p('Non-Clinical Observations: ' + gv('s5_obs'));
+    p('Alternative Activity (if PT skipped): ' + gcb(['alt_outing','alt_home','alt_exercises']));
+    p('Alternative Activity Details: ' + gv('s5_altDetail'));
+    p('');
+    p('── 6. NUTRITION & HYDRATION ──');
+    p('Fluids Encouraged: ' + gr('fluids'));
+    p('Fluid Intake: ' + gv('s6_fluidAmt'));
+    p('Food Assistance: ' + gr('food'));
+    p('Swallowing Difficulty Observed: ' + gr('swallow'));
+    p('Swallowing Description: ' + gv('s6_swallowDesc'));
+    p('Eating Area Sanitized: ' + gr('eat_san'));
+    p('');
+    p('── 7. HYGIENE & SANITATION ──');
+    p('Completed: ' + gcb(['san1','san2','san3','san4','san5','san6']));
+    p('Additional Sanitation: ' + gv('s7_extra'));
+    p('');
+    p('── 8. ENGAGEMENT & COGNITIVE SUPPORT ──');
+    p('Orientation Reinforcement: ' + gr('orient'));
+    p('Engagement Activity: ' + gv('s8_activity'));
+    p('Mood Observed: ' + gv('s8_mood'));
+    p('');
+    p('── 9. OBSERVATIONS & CHANGES ──');
+    p('Changes Noted: ' + gv('s9_changes'));
+    p('Pain Observed: ' + gr('pain'));
+    p('Pain Location/Intensity: ' + gv('s9_pain'));
+    p('Falls / Near-Falls: ' + gr('falls'));
+    p('Fall Description: ' + gv('s9_fallDesc'));
+    p('');
+    p('── 10. HOUSEHOLD TASKS ──');
+    p('Completed: ' + gcb(['hh1','hh2','hh3','hh4','hh5','hh6']));
+    p('Notes: ' + gv('s10_notes'));
+    p('');
+    p('── 11. END-OF-SHIFT CONDITION ──');
+    p('Client Position at Departure: ' + gv('s11_position'));
+    p('Mobility Device Within Reach: ' + gr('device_reach'));
+    p('Client Clean, Dry & Dressed: ' + gr('clean_dry'));
+    p('Overall Condition: ' + gv('s11_condition'));
+    p('Supplies for Next Shift: ' + gv('s11_supplies'));
+    p('');
+    p('── 12. COMMUNICATION ──');
+    p('Responsible Party Notified: ' + gr('rp_notified'));
+    p('Summary: ' + gv('s12_summary'));
+    p('');
+    p('================================================');
+    p('ACKNOWLEDGMENT OF CARE PROVIDED');
+    p('Aide Signature: ' + gv('aideSignature') + '  |  Date: ' + gv('aideDate'));
+    p('Client/Responsible Party: ' + gv('clientSignature') + '  |  Date: ' + gv('clientDate'));
+
+    return lines.join('\n');
+  }
+
+  // ── 1. PRINT — opens browser print dialog (Print or Save as PDF) ──
+  function printForm() {
+    window.print();
+  }
+
+  // ── 2. SAVE AS PDF — uses html2pdf.js to auto-download a PDF ──
+  function saveAsPDF() {
+    const btn = document.getElementById('pdfBtn');
+    const bar = document.querySelector('.action-bar');
+    const client = document.getElementById('clientName').value.trim() || 'HomeCarelog';
+    const date   = document.getElementById('shiftDate').value || 'Date';
+
+    // Temporarily hide action bar from PDF output
+    bar.style.display = 'none';
+    btn.disabled = true;
+
+    const element = document.querySelector('.page-wrap');
+
+    const opt = {
+      margin:      [8, 8, 8, 8],
+      filename:    'Daily_Home_Care_Log_' + client.replace(/\s+/g,'_') + '_' + date + '.pdf',
+      image:       { type: 'jpeg', quality: 0.97 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#faf7f2'
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait'
+      },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    };
+
+    html2pdf()
+      .set(opt)
+      .from(element)
+      .save()
+      .then(() => {
+        bar.style.display = '';
+        btn.disabled = false;
+      })
+      .catch(() => {
+        bar.style.display = '';
+        btn.disabled = false;
+        alert('PDF generation encountered an issue. Please use the Print button and select "Save as PDF" from your printer options.');
+      });
+  }
+
+  // ── 3. EMAIL — opens default mail client with TO + CC pre-filled ──
+  function sendEmail() {
+    const client  = document.getElementById('clientName').value.trim() || 'Client';
+    const date    = document.getElementById('shiftDate').value || 'Unknown Date';
+    const to      = 'shamoka@gmail.com';
+    const cc      = 'aikenfamily6932@gmail.com';
+    const subject = encodeURIComponent('Daily Home Care Log — ' + client + ' — ' + date);
+    const body    = encodeURIComponent(buildBody());
+
+    // mailto with CC; body carries full completed form data
+    const mailto = 'mailto:' + to
+      + '?cc=' + encodeURIComponent(cc)
+      + '&subject=' + subject
+      + '&body=' + body;
+
+    // Use a hidden anchor to avoid navigation issues in some browsers
+    const a = document.createElement('a');
+    a.href = mailto;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+</script>
+
+
+</body></html>
